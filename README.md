@@ -67,9 +67,12 @@ saucedemo-qa/
 │               └── saucedemo/
 │                   └── SauceDemo.java          # Main automation script
 │
+├── lib/
+│   └── selenium-java-4.14.1.jar                # Selenium JAR
+│   └── (other dependency JARs)
+│
 ├── SauceDemo_Test_Case_and_Bug_Report.xlsx     # Bug Report + Test Cases
-├── README.md                                   # This file
-└── pom.xml                                     # Maven dependencies
+└── README.md                                   # This file
 ```
 
 ---
@@ -80,12 +83,11 @@ Ensure the following are installed before running the project:
 
 | Tool | Version | Download |
 |---|---|---|
-| Java JDK | 11 or higher | https://adoptium.net |
-| Maven | 3.6+ | https://maven.apache.org |
+| Java JDK | 25 | https://www.oracle.com/java/technologies/downloads |
 | Google Chrome | Latest stable | https://www.google.com/chrome |
-| ChromeDriver | Must match Chrome version | https://googlechromelabs.github.io/chrome-for-testing |
+| Selenium Java JAR | 4.14.1 | https://www.selenium.dev/downloads |
 
-> **Tip:** Check your Chrome version at `chrome://settings/help` and download the matching ChromeDriver version.
+> **Note:** No separate ChromeDriver installation is required. Selenium 4's built-in **Selenium Manager** automatically detects your Chrome version and manages the driver internally.
 
 ---
 
@@ -100,66 +102,47 @@ cd saucedemo-qa
 
 Or unzip the submitted ZIP file and navigate into the folder.
 
-### Step 2 – Set ChromeDriver Path
+### Step 2 – Add Selenium JAR to Classpath
 
-**Option A – Add ChromeDriver to System PATH (Recommended)**
+Download the Selenium Java standalone JAR from https://www.selenium.dev/downloads
 
-Place `chromedriver.exe` (Windows) or `chromedriver` (Mac/Linux) in a folder that is on your system PATH.
+**In IntelliJ IDEA:**
+1. Go to **File → Project Structure → Modules → Dependencies**
+2. Click **+** → **JARs or Directories**
+3. Select the downloaded `selenium-java-4.14.1.jar` and all JARs inside the `libs/` folder
+4. Click **Apply → OK**
 
+**In Eclipse:**
+1. Right-click the project → **Build Path → Configure Build Path**
+2. Go to **Libraries** tab → **Add External JARs**
+3. Select the Selenium JAR files → **Apply and Close**
+
+### Step 3 – Compile and Run
+
+**From the IDE:** Right-click `SauceDemo.java` → **Run As → Java Application**
+
+**From the command line:**
 ```bash
-# Verify it's accessible
-chromedriver --version
+javac -cp ".;lib/selenium-java-4.14.1.jar" src/com/saucedemo/SauceDemo.java
+java  -cp ".;lib/selenium-java-4.14.1.jar" com.saucedemo.SauceDemo
 ```
-
-**Option B – Set path in code directly**
-
-In `SauceDemo.java`, add this line before `new ChromeDriver()`:
-
-```java
-System.setProperty("webdriver.chrome.driver", "C:/path/to/chromedriver.exe");
-```
-
-### Step 3 – Add Maven Dependencies
-
-If using Maven, add the following to your `pom.xml`:
-
-```xml
-<dependencies>
-    <dependency>
-        <groupId>org.seleniumhq.selenium</groupId>
-        <artifactId>selenium-java</artifactId>
-        <version>4.18.1</version>
-    </dependency>
-</dependencies>
-```
-
-Then run:
-
-```bash
-mvn clean install
-```
-
-### Step 4 – Compile the Project
-
-```bash
-mvn compile
-```
+> On Mac/Linux replace `;` with `:` in the classpath separator.
 
 ---
 
 ## 6. Running the Automation
 
-### Using Maven
-
-```bash
-mvn exec:java -Dexec.mainClass="com.saucedemo.SauceDemo"
-```
-
 ### Using an IDE (IntelliJ IDEA / Eclipse)
 
 1. Open the project in your IDE
-2. Navigate to `src/main/java/com/saucedemo/SauceDemo.java`
+2. Navigate to `src/com/saucedemo/SauceDemo.java`
 3. Right-click the file → **Run 'SauceDemo.main()'**
+
+### Using Command Line
+
+```bash
+java -cp ".;lib/selenium-java-4.14.1.jar" com.saucedemo.SauceDemo
+```
 
 ### Expected Behaviour
 
@@ -264,10 +247,8 @@ The browser window stays open after the script completes. Add `driver.quit();` a
 
 | Tool | Purpose |
 |---|---|
-| Selenium WebDriver 4.x | Browser automation |
+| Selenium WebDriver 4.14.1 | Browser automation (includes Selenium Manager for automatic driver handling) |
 | Java 11+ | Programming language |
-| ChromeDriver | Chrome browser driver |
-| Maven | Dependency management |
 | Microsoft Excel | Test case and bug report documentation |
 
 ---
